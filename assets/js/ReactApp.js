@@ -1,6 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function ReactApp() {
+    const [message, setMessage] = useState("Click button to get results");
+    const api = (params) => {
+        let out = new Promise((resolve, reject) => {
+            var url = new URL("http://localhost:4000/api/fizzbuzz")
+            Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+            fetch(url).then((res) => {
+                res.json().then(data => {
+                    resolve(data)
+                })
+            })
+        })
+        return out
+    }
+    const renderMsg = ({ message }) => {
+        setMessage(message)
+    }
+    const foo = () => {
+        api({foo: true}).then(renderMsg)
+    }
+    const bar = () => {
+        api({bar: true}).then(renderMsg)
+    }
+    const foobar = () => {
+        api({foo: true, bar: true}).then(renderMsg)
+    }
     return (
         <div className="App">
             <h1>Papa - Fullstack Engineer Takehome Assignment</h1>
@@ -41,10 +66,15 @@ function ReactApp() {
             <p><strong>UI Buttons:</strong></p>
 
             <p>Add them here</p>
+            <button onClick={() => foo()}>Foo</button>
+            <button onClick={() => bar()}>Bar</button>
+            <button onClick={() => foobar()}>FooBar</button>
 
             <p><strong>API request result:</strong></p>
 
-            <p>Render result here</p>
+            <p>Render result here <em>{message}</em></p>
+            
+            
         </div>
     );
 }
